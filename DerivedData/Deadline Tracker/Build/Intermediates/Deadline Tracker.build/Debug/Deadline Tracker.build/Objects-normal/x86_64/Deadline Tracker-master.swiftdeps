@@ -1,6 +1,0 @@
-version: "Apple Swift version 2.0 (swiftlang-700.0.59 clang-700.0.72)"
-options: "e632040b071a4f572cf751271ccb3716"
-build_time: [575399485, 506380000]
-inputs: 
-	"/Users/macbookpro/Desktop/Deadline Tracker/Deadline Tracker/AppDelegate.swift": [575399290, 0]
-	"/Users/macbookpro/Desktop/Deadline Tracker/MasterViewController.swift": [575399483, 0]
