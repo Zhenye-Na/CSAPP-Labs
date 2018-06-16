@@ -1,11 +1,8 @@
-###############################################################################
-# Driverlib.pm - A package of helper functions for Perl Autolab drivers
+###############################################################
+# Driverlib.pm - A package of helper functions for Perl drivers
 # 
 # Copyright (c) 2005 David R. O'Hallaron, All rights reserved.
-# May not be used, modified, or copied without permission.
-#
-# $Id: Driverlib.pm,v 1.8 2005/08/18 04:51:44 autolab Exp $
-###############################################################################
+###############################################################
 
 package Driverlib;
 
@@ -29,7 +26,7 @@ use strict;
 
 #
 # driver_post - This is the routine that a driver calls when 
-#    it needs to transmit an autoresult string to Autolab.
+#    it needs to transmit an autoresult string to the result server.
 #
 sub driver_post ($$) {
     my $userid = shift;       # User id for this submission
@@ -39,28 +36,28 @@ sub driver_post ($$) {
     # Echo the autoresult string to stdout if the driver was called
     # by an autograder
     if ($autograded) {
-	print "\n";
-	print "AUTORESULT_STRING=$result\n";
-	return;
+        print "\n";
+        print "AUTORESULT_STRING=$result\n";
+        return;
     }	
 
     # If the driver was called with a specific userid, then submit
-    # the autoresult string to the Autolab server over the Internet.
+    # the autoresult string to the result server over the Internet.
     if ($userid) {
-	my $status = submitr($Driverhdrs::SERVER_NAME, 
-			     $Driverhdrs::SERVER_PORT, 
-			     $Driverhdrs::COURSE_NAME, 
-			     $userid, 
-			     $Driverhdrs::LAB, 
-			     $result);
-	
-	# Print the status of the transfer
-	if (!($status =~ /OK/)) {
-	    print "$status\n";
-	    print "Did not send autoresult string to the Autolab server.\n";
-	    exit(1);
-	}
-	print "Success: Sent autoresult string for $userid to the Autolab server.\n";
+        my $status = submitr($Driverhdrs::SERVER_NAME, 
+                             $Driverhdrs::SERVER_PORT, 
+                             $Driverhdrs::COURSE_NAME, 
+                             $userid, 
+                             $Driverhdrs::LAB, 
+                             $result);
+        
+        # Print the status of the transfer
+        if (!($status =~ /OK/)) {
+            print "$status\n";
+            print "Did not send autoresult string to the result server.\n";
+            exit(1);
+        }
+        print "Success: Sent autoresult string for $userid to the result server.\n";
     }	
 }
 
@@ -70,8 +67,7 @@ sub driver_post ($$) {
 #
 
 #
-# submitr - Sends an autoresult string to the submitr.pl CGI program
-#           on the Autolab server.
+# submitr - Sends an autoresult string to the result server
 #
 sub submitr ($$$$$$) {
     my $hostname = shift;
@@ -92,42 +88,41 @@ sub submitr ($$$$$$) {
     # Establish the connection to the server
     socket(SERVER, PF_INET, SOCK_STREAM, getprotobyname('tcp'));
     $internet_addr = inet_aton($hostname)
-	or die "Cound not convert $hostname to an internet address: $!\n";
+        or die "Could not convert $hostname to an internet address: $!\n";
     $paddr = sockaddr_in($port, $internet_addr);
     connect(SERVER, $paddr)
-	or die "Could not connect to $hostname:$port:$!\n";
+        or die "Could not connect to $hostname:$port:$!\n";
 
     select((select(SERVER), $| = 1)[0]); # enable command buffering
 
     # Send HTTP request to server
     $enc_result = url_encode($result);
-    print SERVER  "GET /unofficialSubmit.rb?course=$course&user=$userid&assessment=$lab&result=$enc_result HTTP/1.0\r\n";
-    print SERVER "Host: $hostname\r\n";
-    print SERVER "\r\n";
+    print SERVER  "GET /$course/submitr.pl/?userid=$userid&lab=$lab&result=$enc_result&submit=submit HTTP/1.0\r\n\r\n";
 
     # Get first HTTP response line
     $line = <SERVER>;
     chomp($line);
     ($http_version, $errcode, $errmsg) = split(/\s+/, $line);
     if ($errcode != 200) {
-	return "Error: HTTP request failed with error $errcode: $errmsg";
+        return "Error: HTTP request failed with error $errcode: $errmsg";
     }
 
     # Read the remaining HTTP response header lines
     while ($line = <SERVER>) {
-	if ($line =~ /^\r\n/) {
-	    last;
-	}
+        if ($line =~ /^\r\n/) {
+            last;
+        }
     }
 
-    # Read and return the response from the Autolab server
+    # Read and return the response from the result server
     $line = <SERVER>;
     chomp($line);
+
     close SERVER;
     return $line;
     
 }
-    
+
 #
 # url_encode - Encode text string so it can be included in URI of GET request
 #

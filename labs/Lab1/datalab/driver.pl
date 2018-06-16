@@ -2,11 +2,13 @@
 #######################################################################
 # driver.pl - CS:APP Data Lab driver
 #
-# Copyright (c) 2004-2015, R. Bryant and D. O'Hallaron, All rights
+# Copyright (c) 2004-2011, R. Bryant and D. O'Hallaron, All rights
 # reserved.  May not be used, modified, or copied without permission.
 #
 # Note: The driver can use either btest or the BDD checker to check
-# puzzles for correctness ($USE_BTEST)
+# puzzles for correctness. This version of the lab uses btest, which
+# has been extended to do better testing of both integer and
+# floating-point puzzles.
 #
 #######################################################################
 
@@ -14,9 +16,10 @@ use strict 'vars';
 use Getopt::Std;
 
 use lib ".";
+use Driverlib;
 
 # Set to 1 to use btest, 0 to use the BDD checker.
-my $USE_BTEST = 0; 
+my $USE_BTEST = 1;
 
 # Generic settings 
 $| = 1;      # Flush stdout each time
@@ -27,11 +30,11 @@ $ENV{PATH} = "/usr/local/bin:/usr/bin:/bin";
 # usage - print help message and terminate
 #
 sub usage {
-    printf STDERR "$_[0]";
-    printf STDERR "Usage: $0 [-h]\n";
-    printf STDERR "Options\n";
-    printf STDERR "  -h            Print this message.\n";
-
+    printf STDERR "$_[0]\n";
+    printf STDERR "Usage: $0 [-h] [-u \"nickname\"]\n";
+    printf STDERR "Options:\n";
+    printf STDERR "  -h              Print this message.\n";
+    printf STDERR "  -u \"nickname\" Send autoresult to server, using nickname on scoreboard)\n";
     die "\n";
 }
 
@@ -68,7 +71,7 @@ my $trating;
 my $foo;
 my $name;
 my $msg;
-my $userid;
+my $nickname;
 my $autoresult;
 
 my %puzzle_c_points;
@@ -82,20 +85,26 @@ my %puzzle_number;
 
 # Parse the command line arguments
 no strict;
-getopts('hf:A');
+getopts('hu:f:A');
 if ($opt_h) {
     usage();
 }
 
 # The default input file is bits.c (change with -f)
 $infile = "bits.c";
-$userid = "";
+$nickname = "";
 
 #####
 # These are command line args that every driver must support
 #
 
-# Hidden flag that tells the driver to output an Autolab JSON string
+# Causes the driver to send an autoresult to the server on behalf of user
+if ($opt_u) {
+    $nickname = $opt_u;
+	check_nickname($nickname);
+}
+
+# Hidden flag that indicates that the driver was invoked by an autograder
 if ($opt_A) {
     $autograded = $opt_A;
 }
@@ -366,22 +375,60 @@ $trating = $total_c_rating + $total_p_rating;
 print "\nScore = $tpoints/$trating [$total_c_points/$total_c_rating Corr + $total_p_points/$total_p_rating Perf] ($tops total operators)\n";
 
 #
-# Optionally generated a JSON autoresult string
-# 
-if ($autograded) {
-    $autoresult = "{ \"scores\": {\"Correctness\":$tpoints}, \"scoreboard\": [$tpoints, $tops";
+# Optionally send the autoresult to the contest server if the driver
+# was called with the -u command line flag.
+#
+if ($nickname) {
+    # Generate the autoresult
+    $autoresult = "$tpoints|$total_c_points|$total_p_points|$tops";
     foreach $name (sort {$puzzle_number{$a} <=> $puzzle_number{$b}} 
-                   keys %puzzle_number) {
-        $autoresult .= ", $puzzle_p_ops{$name}";
-    }   
-    $autoresult .= "]}";
-    print "$autoresult\n";
+	       keys %puzzle_number) {
+	$autoresult .= " |$name:$puzzle_c_points{$name}:$puzzle_c_rating{$name}:$puzzle_p_points{$name}:$puzzle_p_ops{$name}";
+    }
+
+    # Post the autoresult to the server. The Linux login id is
+    # concatenated with the user-supplied nickname for some (very) loose
+    # authentication of submissions.
+    &Driverlib::driver_post("$login:$nickname", $autoresult, $autograded);
 }
 
 # Clean up and exit
 clean ($tmpdir);
 exit;
 
+##################
+# Helper functions
+#
+
+#
+# check_nickname - Check a nickname for legality
+#
+sub check_nickname {
+    my $nickname = shift;
+
+    # Nicknames can't be empty
+    if (length($nickname) < 1) {
+        die "$0: Error: Empty nickname.\n";
+    }
+
+    # Nicknames can't be too long
+    if (length($nickname) > 35) {
+        die "$0: Error: Nickname exceeds 35 characters.\n";
+    }
+
+    # Nicknames can have restricted set of metacharacters (e.g., no #
+    # HTML tags)
+    if (!($nickname =~ /^[_-\w.,'@ ]+$/)) {
+        die "$0: Error: Illegal character in nickname. Only alphanumerics, apostrophes, commas, periods, dashes, underscores, and ampersands are allowed.\n";
+    }
+
+    # Nicknames can't be all whitespace
+    if ($nickname =~ /^\s*$/) {
+        die "$0: Error: Nickname is all whitespace.\n";
+    }
+
+}
+    
 #
 # clean - remove the scratch directory
 #

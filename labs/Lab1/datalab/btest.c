@@ -32,7 +32,7 @@ float strtof(const char *nptr, char **endptr);
 
 /* Handle infinite loops by setting upper limit on execution time, in
    seconds */
-#define TIMEOUT_LIMIT 30
+#define TIMEOUT_LIMIT 10
 
 /* For functions with a single argument, generate TEST_RANGE values
    above and below the min and max test values, and above and below
@@ -141,7 +141,7 @@ static int gen_vals(int test_vals[], int min, int max, int test_range, int arg)
     if ((min == 1 && max == 1)) { 
 	unsigned smallest_norm = 0x00800000;
 	unsigned one = 0x3f800000;
-	unsigned largest_norm = 0x7f7fffff;
+	unsigned largest_norm = 0x7f000000;
 	
 	unsigned inf = 0x7f800000;
 	unsigned nan =  0x7fc00000;
@@ -579,6 +579,6 @@ int main(int argc, char *argv[])
 
     /* test each function */
     errors = run_tests();
-    errors = errors; /* keep gcc happy */
+
     return 0;
 }

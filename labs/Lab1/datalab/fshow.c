@@ -2,12 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
-/* Declarations of some nonstandard library functions */
 float strtof(const char *nptr, char **endptr);
-long long strtoll(const char *s, char **ptr, int base);
-char *strdup(const char *s);
-
 
 #define FLOAT_SIZE 32
 #define FRAC_SIZE 23

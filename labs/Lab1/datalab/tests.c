@@ -25,54 +25,92 @@ unsigned f2u(float f) {
   return a.u;
 }
 
-//1
-int test_bitXor(int x, int y)
+int test_bitAnd(int x, int y)
 {
-  return x^y;
+  return x&y;
+}
+int test_getByte(int x, int n)
+{
+    unsigned char byte;
+    switch(n) {
+    case 0:
+      byte = x;
+      break;
+    case 1:
+      byte = x >> 8;
+      break;
+    case 2:
+      byte = x >> 16;
+      break;
+    default:
+      byte = x >> 24;
+      break;
+    }
+    return (int) (unsigned) byte;
+}
+int test_logicalShift(int x, int n) {
+  unsigned u = (unsigned) x;
+  unsigned shifted = u >> n;
+  return (int) shifted;
+}
+int test_bitCount(int x) {
+  int result = 0;
+  int i;
+  for (i = 0; i < 32; i++)
+    result += (x >> i) & 0x1;
+  return result;
+}
+int test_bang(int x)
+{
+  return !x;
 }
 int test_tmin(void) {
   return 0x80000000;
 }
-//2
-int test_isTmax(int x) {
-    return x == 0x7FFFFFFF;
+int test_fitsBits(int x, int n)
+{
+  int TMin_n = -(1 << (n-1));
+  int TMax_n = (1 << (n-1)) - 1;
+  return x >= TMin_n && x <= TMax_n;
 }
-int test_allOddBits(int x) {
-  int i;
-  for (i = 1; i < 32; i+=2)
-      if ((x & (1<<i)) == 0)
-   return 0;
-  return 1;
+int test_divpwr2(int x, int n)
+{
+    int p2n = 1<<n;
+    return x/p2n;
 }
 int test_negate(int x) {
   return -x;
 }
-//3
-int test_isAsciiDigit(int x) {
-  return (0x30 <= x) && (x <= 0x39);
-}
-int test_conditional(int x, int y, int z)
-{
-  return x?y:z;
+int test_isPositive(int x) {
+  return x > 0;
 }
 int test_isLessOrEqual(int x, int y)
 {
   return x <= y;
 }
-//4
-int test_logicalNeg(int x)
-{
-  return !x;
+int test_ilog2(int x) {
+  int mask, result;
+  /* find the leftmost bit */
+  result = 31;
+  mask = 1 << result;
+  while (!(x & mask)) {
+    result--;
+    mask = 1 << result;
+  }
+  return result;
 }
-int test_howManyBits(int x) {
-    unsigned int a, cnt;
-    x = x<0 ? -x-1 : x;
-    a = (unsigned int)x;
-    for (cnt=0; a; a>>=1, cnt++)
-        ;
-    return (int)(cnt + 1);
+unsigned test_float_neg(unsigned uf) {
+    float f = u2f(uf);
+    float nf = -f;
+    if (isnan(f))
+ return uf;
+    else
+ return f2u(nf);
 }
-//float
+unsigned test_float_i2f(int x) {
+  float f = (float) x;
+  return f2u(f);
+}
 unsigned test_float_twice(unsigned uf) {
   float f = u2f(uf);
   float tf = 2*f;
@@ -80,13 +118,4 @@ unsigned test_float_twice(unsigned uf) {
     return uf;
   else
     return f2u(tf);
-}
-unsigned test_float_i2f(int x) {
-  float f = (float) x;
-  return f2u(f);
-}
-int test_float_f2i(unsigned uf) {
-  float f = u2f(uf);
-  int x = (int) f;
-  return x;
 }

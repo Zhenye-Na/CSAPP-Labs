@@ -131,18 +131,65 @@ NOTES:
 
 
 #endif
-//1
 /* 
- * bitXor - x^y using only ~ and & 
- *   Example: bitXor(4, 5) = 1
- *   Legal ops: ~ &
- *   Max ops: 14
+ * bitAnd - x&y using only ~ and | 
+ *   Example: bitAnd(6, 5) = 4
+ *   Legal ops: ~ |
+ *   Max ops: 8
  *   Rating: 1
  */
-int bitXor(int x, int y) {
-    // x ^ y = (x | y) & ~(x & y)
-    // x | y = ~(~x & ~y)
-    return ~(~x & ~y) & ~(x & y);
+int bitAnd(int x, int y) {
+  return 2;
+}
+/* 
+ * getByte - Extract byte n from word x
+ *   Bytes numbered from 0 (LSB) to 3 (MSB)
+ *   Examples: getByte(0x12345678,1) = 0x56
+ *   Legal ops: ! ~ & ^ | + << >>
+ *   Max ops: 6
+ *   Rating: 2
+ */
+int getByte(int x, int n) {
+
+
+
+
+
+
+
+  return 2;
+
+}
+/* 
+ * logicalShift - shift x to the right by n, using a logical shift
+ *   Can assume that 0 <= n <= 31
+ *   Examples: logicalShift(0x87654321,4) = 0x08765432
+ *   Legal ops: ! ~ & ^ | + << >>
+ *   Max ops: 20
+ *   Rating: 3 
+ */
+int logicalShift(int x, int n) {
+  return 2;
+}
+/*
+ * bitCount - returns count of number of 1's in word
+ *   Examples: bitCount(5) = 2, bitCount(7) = 3
+ *   Legal ops: ! ~ & ^ | + << >>
+ *   Max ops: 40
+ *   Rating: 4
+ */
+int bitCount(int x) {
+  return 2;
+}
+/* 
+ * bang - Compute !x without using !
+ *   Examples: bang(3) = 0, bang(0) = 1
+ *   Legal ops: ~ & ^ | + << >>
+ *   Max ops: 12
+ *   Rating: 4 
+ */
+int bang(int x) {
+  return 2;
 }
 /* 
  * tmin - return minimum two's complement integer 
@@ -151,30 +198,30 @@ int bitXor(int x, int y) {
  *   Rating: 1
  */
 int tmin(void) {
-    int tmp = 0x7F;
-    return tmp << 31;
-}
-//2
-/*
- * isTmax - returns 1 if x is the maximum, two's complement number,
- *     and 0 otherwise 
- *   Legal ops: ! ~ & ^ | +
- *   Max ops: 10
- *   Rating: 2
- */
-int isTmax(int x) {
-    int tmp = 0x7F;
-    return x == ~(tmp << 31);
+  return 2;
 }
 /* 
- * allOddBits - return 1 if all odd-numbered bits in word set to 1
- *   Examples allOddBits(0xFFFFFFFD) = 0, allOddBits(0xAAAAAAAA) = 1
+ * fitsBits - return 1 if x can be represented as an 
+ *  n-bit, two's complement integer.
+ *   1 <= n <= 32
+ *   Examples: fitsBits(5,3) = 0, fitsBits(-4,3) = 1
  *   Legal ops: ! ~ & ^ | + << >>
- *   Max ops: 12
+ *   Max ops: 15
  *   Rating: 2
  */
-int allOddBits(int x) {
+int fitsBits(int x, int n) {
   return 2;
+}
+/* 
+ * divpwr2 - Compute x/(2^n), for 0 <= n <= 30
+ *  Round toward zero
+ *   Examples: divpwr2(15,1) = 7, divpwr2(-33,4) = -2
+ *   Legal ops: ! ~ & ^ | + << >>
+ *   Max ops: 15
+ *   Rating: 2
+ */
+int divpwr2(int x, int n) {
+    return 2;
 }
 /* 
  * negate - return -x 
@@ -184,29 +231,16 @@ int allOddBits(int x) {
  *   Rating: 2
  */
 int negate(int x) {
-  return ~x + 1;
-}
-//3
-/* 
- * isAsciiDigit - return 1 if 0x30 <= x <= 0x39 (ASCII codes for characters '0' to '9')
- *   Example: isAsciiDigit(0x35) = 1.
- *            isAsciiDigit(0x3a) = 0.
- *            isAsciiDigit(0x05) = 0.
- *   Legal ops: ! ~ & ^ | + << >>
- *   Max ops: 15
- *   Rating: 3
- */
-int isAsciiDigit(int x) {
   return 2;
 }
 /* 
- * conditional - same as x ? y : z 
- *   Example: conditional(2,4,5) = 4
+ * isPositive - return 1 if x > 0, return 0 otherwise 
+ *   Example: isPositive(-1) = 0.
  *   Legal ops: ! ~ & ^ | + << >>
- *   Max ops: 16
+ *   Max ops: 8
  *   Rating: 3
  */
-int conditional(int x, int y, int z) {
+int isPositive(int x) {
   return 2;
 }
 /* 
@@ -219,47 +253,29 @@ int conditional(int x, int y, int z) {
 int isLessOrEqual(int x, int y) {
   return 2;
 }
-//4
-/* 
- * logicalNeg - implement the ! operator, using all of 
- *              the legal operators except !
- *   Examples: logicalNeg(3) = 0, logicalNeg(0) = 1
- *   Legal ops: ~ & ^ | + << >>
- *   Max ops: 12
- *   Rating: 4 
- */
-int logicalNeg(int x) {
-  return 2;
-}
-/* howManyBits - return the minimum number of bits required to represent x in
- *             two's complement
- *  Examples: howManyBits(12) = 5
- *            howManyBits(298) = 10
- *            howManyBits(-5) = 4
- *            howManyBits(0)  = 1
- *            howManyBits(-1) = 1
- *            howManyBits(0x80000000) = 32
- *  Legal ops: ! ~ & ^ | + << >>
- *  Max ops: 90
- *  Rating: 4
- */
-int howManyBits(int x) {
-  return 0;
-}
-//float
-/* 
- * float_twice - Return bit-level equivalent of expression 2*f for
- *   floating point argument f.
- *   Both the argument and result are passed as unsigned int's, but
- *   they are to be interpreted as the bit-level representation of
- *   single-precision floating point values.
- *   When argument is NaN, return argument
- *   Legal ops: Any integer/unsigned operations incl. ||, &&. also if, while
- *   Max ops: 30
+/*
+ * ilog2 - return floor(log base 2 of x), where x > 0
+ *   Example: ilog2(16) = 4
+ *   Legal ops: ! ~ & ^ | + << >>
+ *   Max ops: 90
  *   Rating: 4
  */
-unsigned float_twice(unsigned uf) {
+int ilog2(int x) {
   return 2;
+}
+/* 
+ * float_neg - Return bit-level equivalent of expression -f for
+ *   floating point argument f.
+ *   Both the argument and result are passed as unsigned int's, but
+ *   they are to be interpreted as the bit-level representations of
+ *   single-precision floating point values.
+ *   When argument is NaN, return argument.
+ *   Legal ops: Any integer/unsigned operations incl. ||, &&. also if, while
+ *   Max ops: 10
+ *   Rating: 2
+ */
+unsigned float_neg(unsigned uf) {
+ return 2;
 }
 /* 
  * float_i2f - Return bit-level equivalent of expression (float) x
@@ -274,17 +290,16 @@ unsigned float_i2f(int x) {
   return 2;
 }
 /* 
- * float_f2i - Return bit-level equivalent of expression (int) f
- *   for floating point argument f.
- *   Argument is passed as unsigned int, but
- *   it is to be interpreted as the bit-level representation of a
- *   single-precision floating point value.
- *   Anything out of range (including NaN and infinity) should return
- *   0x80000000u.
+ * float_twice - Return bit-level equivalent of expression 2*f for
+ *   floating point argument f.
+ *   Both the argument and result are passed as unsigned int's, but
+ *   they are to be interpreted as the bit-level representation of
+ *   single-precision floating point values.
+ *   When argument is NaN, return argument
  *   Legal ops: Any integer/unsigned operations incl. ||, &&. also if, while
  *   Max ops: 30
  *   Rating: 4
  */
-int float_f2i(unsigned uf) {
+unsigned float_twice(unsigned uf) {
   return 2;
 }
