@@ -14,8 +14,8 @@ Fall 2015
 
 <div align="center">
     <a href="http://csapp.cs.cmu.edu/3e/labs.html"><strong>Computer Systems: A Programmer's Perspective, 3/E (CS:APP3e)</strong></a>
-    <br><br>
 </div>
+<br>
 
 > **Lab Assignments**
 > This page contains a complete set of turnkey labs for the CS:APP3e text. The labs all share some common features. Each lab is distributed in a self-contained tar file. You will need a CS:APP account to download the code. To untar foo.tar, type "tar xvf foo.tar" to the Unix shell. This will create a directory called "foo" that contains all of the material for the lab.
