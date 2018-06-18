@@ -14,6 +14,7 @@ Fall 2015
 
 <div align="center">
     <a href="http://csapp.cs.cmu.edu/3e/labs.html"><strong>Computer Systems: A Programmer's Perspective, 3/E (CS:APP3e)</strong></a>
+    <br><br>
 </div>
 
 > **Lab Assignments**
