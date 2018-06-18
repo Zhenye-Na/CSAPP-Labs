@@ -131,7 +131,8 @@ NOTES:
 
 
 #endif
-/* 
+//1. Bit Manipulations
+/*
  * bitAnd - x&y using only ~ and | 
  *   Example: bitAnd(6, 5) = 4
  *   Legal ops: ~ |
@@ -175,9 +176,12 @@ int logicalShift(int x, int n) {
  *   Max ops: 40
  *   Rating: 4
  */
-int bitCount(int x) {
-    int mask = 0x1;
-    
+int bitCount(int v) {
+    unsigned int c;                                     // store the total here
+    v = v - ((v >> 1) & 0x55555555);                    // reuse input as temporary
+    v = (v & 0x33333333) + ((v >> 2) & 0x33333333);     // temp
+    c = ((v + (v >> 4) & 0xF0F0F0F) * 0x1010101) >> 24; // count
+    return c;
 }
 /* 
  * bang - Compute !x without using !
@@ -189,6 +193,7 @@ int bitCount(int x) {
 int bang(int x) {
     return ((x >> 31) | ((~x + 1) >> 31)) + 1;
 }
+//2. Two’s Complement Arithmetic
 /* 
  * tmin - return minimum two's complement integer 
  *   Legal ops: ! ~ & ^ | + << >>
@@ -208,6 +213,7 @@ int tmin(void) {
  *   Rating: 2
  */
 int fitsBits(int x, int n) {
+    // int mask = 0xFF;
     return 2;
 }
 /* 
@@ -219,7 +225,8 @@ int fitsBits(int x, int n) {
  *   Rating: 2
  */
 int divpwr2(int x, int n) {
-    return 2;
+    // add (1 << n) - 1 only if x is negative
+    return (x + ((x >> 31) & ((1 << n) + ~0))) >> n;
 }
 /* 
  * negate - return -x 
@@ -268,8 +275,41 @@ int isLessOrEqual(int x, int y) {
  *   Rating: 4
  */
 int ilog2(int x) {
-    return 2;
+    // @source: https://stackoverflow.com/questions/21442088/computing-the-floor-of-log-2x-using-only-bitwise-operators-in-c
+    int i, j, k, l, m;
+    x = x | (x >> 1);
+    x = x | (x >> 2);
+    x = x | (x >> 4);
+    x = x | (x >> 8);
+    x = x | (x >> 16);
+    
+    // i = 0x55555555
+    i = 0x55 | (0x55 << 8);
+    i = i | (i << 16);
+    
+    // j = 0x33333333
+    j = 0x33 | (0x33 << 8);
+    j = j | (j << 16);
+    
+    // k = 0x0f0f0f0f
+    k = 0x0f | (0x0f << 8);
+    k = k | (k << 16);
+    
+    // l = 0x00ff00ff
+    l = 0xff | (0xff << 16);
+    
+    // m = 0x0000ffff
+    m = 0xff | (0xff << 8);
+    
+    x = (x & i) + ((x >> 1) & i);
+    x = (x & j) + ((x >> 2) & j);
+    x = (x & k) + ((x >> 4) & k);
+    x = (x & l) + ((x >> 8) & l);
+    x = (x & m) + ((x >> 16) & m);
+    x = x + ~0;
+    return x;
 }
+//3. Floating-Point Operations
 /* 
  * float_neg - Return bit-level equivalent of expression -f for
  *   floating point argument f.
@@ -282,7 +322,8 @@ int ilog2(int x) {
  *   Rating: 2
  */
 unsigned float_neg(unsigned uf) {
-    return 2;
+    unsigned sign = 0x1 << 31;
+    return (unsigned) (uf ^ sign);
 }
 /* 
  * float_i2f - Return bit-level equivalent of expression (float) x
@@ -308,5 +349,7 @@ unsigned float_i2f(int x) {
  *   Rating: 4
  */
 unsigned float_twice(unsigned uf) {
+    // uf != uf will be true only if uf is NaN
+    if (uf != uf) return uf;
     return 2;
 }
