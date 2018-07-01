@@ -138,3 +138,24 @@ Example usages:
 
 
 
+```sh
+$ ./btest 
+Score	Rating	Errors	Function
+ 1	1	0	bitAnd
+ 2	2	0	getByte
+ 3	3	0	logicalShift
+ 4	4	0	bitCount
+ 4	4	0	bang
+ 1	1	0	tmin
+ERROR: Test fitsBits(-2147483648[0x80000000],32[0x20]) failed...
+...Gives 1[0x1]. Should be 0[0x0]
+ 2	2	0	divpwr2
+ 2	2	0	negate
+ 3	3	0	isPositive
+ 3	3	0	isLessOrEqual
+ 4	4	0	ilog2
+ 2	2	0	float_neg
+ 4	4	0	float_i2f
+ 4	4	0	float_twice
+Total points: 39/41
+```
