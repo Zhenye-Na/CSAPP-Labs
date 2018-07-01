@@ -1,14 +1,9 @@
-# 15-213/18-213/15-513: Intro to Computer Systems (ICS), Fall 2015
+# Computer Systems: A Programmer's Perspective, 3/E (CS:APP3e)
 
 * * *
 
-<div align="center">
-    <a href="http://csapp.cs.cmu.edu/3e/labs.html"><strong>Computer Systems: A Programmer's Perspective, 3/E (CS:APP3e)</strong></a>
-</div>
-<br>
-
-> **Lab Assignments**
-> This page contains a complete set of turnkey labs for the CS:APP3e text. The labs all share some common features. Each lab is distributed in a self-contained tar file. You will need a CS:APP account to download the code. To untar foo.tar, type "tar xvf foo.tar" to the Unix shell. This will create a directory called "foo" that contains all of the material for the lab.
+> **Lab Assignments**  
+> The labs all share some common features. Each lab is distributed in a self-contained tar file. You will need a CS:APP account to download the code. To untar foo.tar, type "tar xvf foo.tar" to the Unix shell. This will create a directory called "foo" that contains all of the material for the lab.
 > 
 > Handout directories for each lab (without solutions) are available to students who are using the book for self-study and who want to work on the labs. Solutions are provided only to instructors.
 
@@ -23,7 +18,7 @@ The ICS course provides a programmer's view of how computer systems execute prog
 
 ### Lab1: Datalab
 
-```
+```sh
 $ ./btest 
 Score	Rating	Errors	Function
  1	1	0	bitAnd
