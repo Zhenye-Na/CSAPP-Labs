@@ -1,1 +1,11 @@
 This is an x86-64 bomb for self-study students. 
+
+$ ./bomb psol.txt
+Welcome to my fiendish little bomb. You have 6 phases with
+which to blow yourself up. Have a nice day!
+Phase 1 defused. How about the next one?
+That's number 2.  Keep going!
+Halfway there!
+So you got that one.  Try this one.
+Good work!  On to the next...
+Congratulations! You've defused the bomb!
