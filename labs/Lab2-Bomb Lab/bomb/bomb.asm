@@ -718,24 +718,11 @@ Disassembly of section .text:
 
 /*
  * Sixth bomb:
- *     g
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
+ *     Read in six numbers;
+ *     Make sure each number is less than or equals to 6;
+ *     Make sure there are no duplicates in these 6 numbers;
+ *     Subtract these 6 numbers from 7;
+ *     Linked List is in Descending Order;
  *
  */
 
