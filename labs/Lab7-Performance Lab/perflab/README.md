@@ -71,6 +71,10 @@ void optimized_rotate(int dim, pixel *src, pixel *dst)
 }
 ```
 
+**Reference:** 
+- [How to Use Loop Blocking to Optimize Memory Use on 32-Bit Intel® Architecture](https://software.intel.com/en-us/articles/how-to-use-loop-blocking-to-optimize-memory-use-on-32-bit-intel-architecture)
+- [Using Blocking to Increase Temporal Locality](http://csapp.cs.cmu.edu/2e/waside/waside-blocking.pdf)
+
 ## Smooth()
 
 ```c
