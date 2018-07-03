@@ -12,12 +12,12 @@ The labs all share some common features. Each lab is distributed in a self-conta
 
 Handout directories for each lab (without solutions) are available to students who are using the book for self-study and who want to work on the labs. Solutions are provided only to instructors.
 
-- [x] [Data Lab](https://github.com/Zhenye-Na/computer-systems/tree/master/labs/Lab1-Data%20Lab)
-- [x] [Bomb Lab](https://github.com/Zhenye-Na/computer-systems/tree/master/labs/Lab2-Bomb%20Lab)
-- [x] [Attack Lab](https://github.com/Zhenye-Na/computer-systems/tree/master/labs/Lab3-Attack%20Lab)
-- [x] [Buffer Lab]()
+- [x] [Data Lab](https://github.com/Zhenye-Na/CSAPP-Labs/tree/master/labs/Lab1-Data%20Lab)
+- [x] [Bomb Lab](https://github.com/Zhenye-Na/CSAPP-Labs/tree/master/labs/Lab2-Bomb%20Lab)
+- [x] [Attack Lab](https://github.com/Zhenye-Na/CSAPP-Labs/tree/master/labs/Lab3-Attack%20Lab)
+- [x] [Buffer Lab](https://github.com/Zhenye-Na/CSAPP-Labs/tree/master/labs/Lab4-Buffer%20Lab)
 - [ ] Architecture Lab
 - [ ] Cache Lab
-- [ ] Performance Lab
-- [ ] Shell Lab
+- [x] [Performance Lab](https://github.com/Zhenye-Na/CSAPP-Labs/tree/master/labs/Lab7-Performance%20Lab)
+- [ ] [Shell Lab](https://github.com/Zhenye-Na/CSAPP-Labs/tree/master/labs/Lab8-Shell%20Lab)
 - [ ] Malloc Lab
