@@ -15,12 +15,12 @@
 /* Cache parameters struct */
 typedef struct
 {
-    int s;                /* 2^s cache sets */
-    int b;                /* cacheline block size 2^b bytes */
-    int E;                /* number of cachelines per set */
-    int S;                /* number of sets, derived from S = 2^s */
-    int B;                /* cacheline block size (bytes), derived from B = 2^b */
-    char *trace_file;     /* valgrind trace file */
+  int s;                /* 2^s cache sets */
+  int b;                /* cacheline block size 2^b bytes */
+  int E;                /* number of cachelines per set */
+  int S;                /* number of sets, derived from S = 2^s */
+  int B;                /* cacheline block size (bytes), derived from B = 2^b */
+  char *trace_file;     /* valgrind trace file */
 } cache_param_t;
 
 /* Always use a 64-bit variable to hold memory addresses*/
