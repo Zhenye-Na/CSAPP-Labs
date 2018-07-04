@@ -19,19 +19,19 @@ A switch statement is used on the local variable holding the return value from `
 Example:  
 ```c
 int main(int argc, char** argv){
-  int opt,x,y;
+  int opt, x, y;
   /* looping over arguments */
-  while(-1 != (opt = getopt(argc, argv, “x:y:"))){
+  while(-1 != (opt = getopt(argc, argv, "x:y:"))){
     /* determine which argument it’s processing */
     switch(opt) {
       case 'x':
         x = atoi(optarg);
         break;
-      case ‘y':
+      case 'y':
         y = atoi(optarg);
         break;
       default:
-        printf(“wrong argument\n");
+        printf("wrong argument\n");
         break;
     }
   }
