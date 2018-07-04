@@ -16,8 +16,9 @@ Handout directories for each lab (without solutions) are available to students w
 - [x] [Bomb Lab](https://github.com/Zhenye-Na/CSAPP-Labs/tree/master/labs/Lab2-Bomb%20Lab)
 - [x] [Attack Lab](https://github.com/Zhenye-Na/CSAPP-Labs/tree/master/labs/Lab3-Attack%20Lab)
 - [x] [Buffer Lab](https://github.com/Zhenye-Na/CSAPP-Labs/tree/master/labs/Lab4-Buffer%20Lab)
-- [ ] Architecture Lab
-- [ ] Cache Lab
+- [x] [Architecture Lab](https://github.com/Zhenye-Na/CSAPP-Labs/tree/master/labs/Lab5-Architecture%20Lab)
+- [x] [Cache Lab](https://github.com/Zhenye-Na/CSAPP-Labs/tree/master/labs/Lab6-Cache%20Lab)
 - [x] [Performance Lab](https://github.com/Zhenye-Na/CSAPP-Labs/tree/master/labs/Lab7-Performance%20Lab)
 - [ ] [Shell Lab](https://github.com/Zhenye-Na/CSAPP-Labs/tree/master/labs/Lab8-Shell%20Lab)
-- [ ] Malloc Lab
+- [ ] [Malloc Lab](https://github.com/Zhenye-Na/CSAPP-Labs/tree/master/labs/Lab9-Malloc%20Lab)
+- [ ] [Proxy Lab](https://github.com/Zhenye-Na/CSAPP-Labs/tree/master/labs/Lab10-Proxy%20Lab)
