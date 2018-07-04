@@ -4,6 +4,8 @@
  */
 
 #include "cachelab.h"
+
+#include <stdio.h>
 #include <getopt.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -30,12 +32,12 @@ typedef struct
   int valid;
   mem_addr_t tag;
   int timestamp;
-} cache_line;
+} line_st;
 
 /* Cache set struct */
 typedef struct
 {
-  cache_line *lines;
+  line_st *lines;
 } cache_set;
 
 /* Cache struct */
@@ -43,6 +45,9 @@ typedef struct
 {
   cache_set *sets;
 } cache_t;
+
+/* global variable */
+char * program_name = NULL;
 
 /* Usage Info */
 void csim_help_info()
@@ -73,9 +78,6 @@ void missing_file_error(char *file)
 {
   printf("%s: No such file or directory\n", file);
 }
-
-/* global variable */
-char * program_name = NULL;
 
 
 int main(int argc, char** argv)
@@ -117,7 +119,7 @@ int main(int argc, char** argv)
 
       // Associativity (number of lines per set)
       case 'E':
-        E_flag == 1;
+        E_flag = 1;
         param.E = atoi(optarg);
         break;
 
@@ -156,7 +158,7 @@ int main(int argc, char** argv)
   /* If user missed anyone of these arguments, program will print Usage Info and
    * exit the program.
    */
-  if (s_flag == 0 || b_flag == 0 || t_flag == 0 || E_flag == 0)
+  if (s_flag == 0 || E_flag == 0 || b_flag == 0 || t_flag == 0)
   {
     missing_args_error();
     csim_help_info();
@@ -190,7 +192,7 @@ int main(int argc, char** argv)
   int miss_count = 0;
   int eviction_count = 0;
 
-  char identifier;       // L, S, M
+  char act;       // L, S, M
   int size;              // size read in from file
   int TSTAMP = 0;        // value for LRU
   int empty = -1;        // index of empty space
@@ -200,9 +202,9 @@ int main(int argc, char** argv)
   mem_addr_t addr;
 
   // Reading lines like " M 20,1" or "L 19,3"
-  while(fscanf(pFile," %c %x,%d", &identifier, &addr, &size) > 0)
+  while(fscanf(pFile," %c %llx,%d", &act, &addr, &size) > 0)
   {
-    if (identifier != 'I')
+    if (act != 'I')
     {
       // calculate address tag and set index
       mem_addr_t addr_tag = addr >> (param.s + param.b);
@@ -213,7 +215,7 @@ int main(int argc, char** argv)
       cache_set set = cache.sets[setid];
       int low = INT_MAX;
 
-      for (int e = 0; e < par.E; e++) {
+      for (int e = 0; e < param.E; e++) {
         if (set.lines[e].valid == 1)
         {
           // Look for hit before eviction candidates
@@ -291,6 +293,8 @@ int main(int argc, char** argv)
       E = 0;
 
   }
+}
+
   fclose(pFile); // close file when done
 
   printSummary(hit_count, miss_count, eviction_count);
