@@ -51,12 +51,12 @@ The `fscanf()` function is just like `scanf()` except it can specify a stream to
 
 ```c
 FILE * pFile; //pointer to FILE object
-pFile = fopen ("tracefile.txt",“r"); //open file for reading
+pFile = fopen("tracefile.txt","r"); //open file for reading
 char identifier;
 unsigned address;
 int size;
 // Reading lines like " M 20,1" or "L 19,3"
-while(fscanf(pFile,“ %c %x,%d”, &identifier, &address, &size)>0)
+while(fscanf(pFile,"%c %x,%d", &identifier, &address, &size) > 0)
 {
   // Do stuff
 }
