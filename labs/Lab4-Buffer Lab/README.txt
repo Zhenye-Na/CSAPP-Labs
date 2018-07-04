@@ -451,6 +451,3 @@ manually by feeding to the bomb:
     unix> cat <userid>-<level>.txt | ./hex2raw | ./bufbomb
 
 
-
-
-
