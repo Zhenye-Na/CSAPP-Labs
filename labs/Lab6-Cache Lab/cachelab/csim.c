@@ -7,9 +7,12 @@
 #include <getopt.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <math.h>
+#include <limits.h>
 
 /* Cache parameters struct */
-typedef struct {
+typedef struct
+{
     int s;                /* 2^s cache sets */
     int b;                /* cacheline block size 2^b bytes */
     int E;                /* number of cachelines per set */
@@ -18,6 +21,28 @@ typedef struct {
     char *trace_file;     /* valgrind trace file */
 } cache_param_t;
 
+/* Always use a 64-bit variable to hold memory addresses*/
+typedef unsigned long long int mem_addr_t;
+
+/* Cache Line struct */
+typedef struct
+{
+  int valid;
+  mem_addr_t tag;
+  int timestamp;
+} cache_line;
+
+/* Cache set struct */
+typedef struct
+{
+  cache_line *lines;
+} cache_set;
+
+/* Cache struct */
+typedef struct
+{
+  cache_set *sets;
+} cache_t;
 
 /* Usage Info */
 void csim_help_info()
@@ -36,12 +61,18 @@ void csim_help_info()
 
 }
 
-
-void missing_args()
+/* Missing arguments error. */
+void missing_args_error()
 {
   printf("%s: Missing required command line argument\n", program_name);
 }
 
+
+/* Missing input file error. */
+void missing_file_error(char *file)
+{
+  printf("%s: No such file or directory\n", file);
+}
 
 /* global variable */
 char * program_name = NULL;
@@ -52,12 +83,10 @@ int main(int argc, char** argv)
   // Declare variables
   int opt;
   int help_flag = 0, verbose_flag = 0, s_flag = 0, E_flag = 0, b_flag = 0, t_flag = 0;
-
   cache_param_t param;
-
   program_name = argv[0];
 
-  /* Get command line arguments with getopt()
+  /* Read in command line arguments with getopt()
    *
    * `getopt()` to handle two program options: -n, with no associated value; and
    *   n, with no associated value.
@@ -65,11 +94,6 @@ int main(int argc, char** argv)
    *
    * `atoi()` is a function in C that converts a string into an integer
    *   numerical representation.
-   *
-   *
-   *
-   *
-   *
    */
   while(-1 != (opt = getopt(argc, argv, "hvs:E:b:t:")))
   {
@@ -97,7 +121,7 @@ int main(int argc, char** argv)
         param.E = atoi(optarg);
         break;
 
-      // Number of block bits (B = 2 b is the block size)
+      // Number of block bits (B = 2^b is the block size)
       case 'b':
         b_flag = 1;
         param.b = atoi(optarg);
@@ -109,7 +133,7 @@ int main(int argc, char** argv)
         param.trace_file = optarg;
         break;
 
-      // No command line arguments
+      // No command line arguments, print usage info and exit
       default:
         csim_help_info();
         return 0;
@@ -123,30 +147,152 @@ int main(int argc, char** argv)
   if (help_flag == 1)
   {
     csim_help_info();
-    exit(1);
+    exit(EXIT_SUCCESS);
   }
 
+  // exit(0) indicates successful program termination & it is fully portable, While
+  // exit(1) (usually) indicates unsucessful termination. However, it's usage is non-portable.
 
   /* If user missed anyone of these arguments, program will print Usage Info and
    * exit the program.
    */
   if (s_flag == 0 || b_flag == 0 || t_flag == 0 || E_flag == 0)
   {
-    missing_args();
+    missing_args_error();
     csim_help_info();
-    exit(1);
+    exit(EXIT_FAILURE);
   }
 
-  // displays trace info
-  if (verbose_flag == 1)
-    // display_trace_info()
-    pass;
+  FILE *pFile;                          // pointer to FILE object
+  pFile = fopen(param.trace_file, "r");  // open file for reading
 
+  /* fopen() returns NULL when The file doesn't exist */
+  if(pFile == NULL)
+  {
+    missing_file_error(param.trace_file);
+    exit(EXIT_FAILURE);
+  }
 
+  /* Assign cache parameters */
+  param.S = (int) pow(2, param.s);
+  param.B = (int) pow(2, param.b);
 
+  // Allocate space for sets and lines
+  cache_t cache;
+  cache.sets = malloc(param.S * sizeof(cache_set));
+  for (int i = 0; i < param.S; i++)
+  {
+    cache.sets[i].lines = malloc(sizeof(line_st) * param.E);
+  }
 
+  /* Counters for verbose_flag */
+  int hit_count = 0;
+  int miss_count = 0;
+  int eviction_count = 0;
 
-  printSummary(0, 0, 0);
-  // printSummary(hit_count, miss_count, eviction_count);
+  char identifier;       // L, S, M
+  int size;              // size read in from file
+  int TSTAMP = 0;        // value for LRU
+  int empty = -1;        // index of empty space
+  int H = 0;             // is there a hit
+  int E = 0;             // is there an eviction
+  int toEvict = 0;       // keeps track of what to evict
+  mem_addr_t addr;
+
+  // Reading lines like " M 20,1" or "L 19,3"
+  while(fscanf(pFile," %c %x,%d", &identifier, &addr, &size) > 0)
+  {
+    if (identifier != 'I')
+    {
+      // calculate address tag and set index
+      mem_addr_t addr_tag = addr >> (param.s + param.b);
+      int tag_size = (64 - (param.s + param.b));
+      unsigned long long temp = addr << (tag_size);
+      unsigned long long setid = temp >> (tag_size + param.b);
+
+      cache_set set = cache.sets[setid];
+      int low = INT_MAX;
+
+      for (int e = 0; e < par.E; e++) {
+        if (set.lines[e].valid == 1)
+        {
+          // Look for hit before eviction candidates
+          if (set.lines[e].tag == addr_tag)
+          {
+            hit_count++;
+            H = 1;
+            set.lines[e].timestamp = TSTAMP;
+            TSTAMP++;
+          }
+          // Look for oldest for eviction.
+          else if (set.lines[e].timestamp < low)
+          {
+            low = set.lines[e].timestamp;
+            toEvict = e;
+          }
+        }
+        // if we haven't yet found an empty, mark one that we found.
+        else if(empty == -1)
+        {
+          empty = e;
+        }
+
+      }
+
+      // if we have a miss
+      if ( H != 1 )
+      {
+        miss_count++;
+
+        //if we have an empty line
+        if (empty > -1)
+        {
+          set.lines[empty].valid = 1;
+          set.lines[empty].tag = addr_tag;
+          set.lines[empty].timestamp = TSTAMP;
+          TSTAMP++;
+        }
+        // if the set is full we need to evict
+        else if (empty < 0)
+        {
+          E = 1;
+          set.lines[toEvict].tag = addr_tag;
+          set.lines[toEvict].timestamp = TSTAMP;
+          TSTAMP++;
+          eviction_count++;
+        }
+      }
+      //if the instruction is M, we will always get a hit
+      if ( act == 'M' )
+      {
+        hit_count++;
+      }
+      //if the -v flag is set print out all debug information
+      if (verbose_flag == 1)
+      {
+        printf( "%c ", act );
+        printf( "%llx,%d", addr, size );
+        if (H == 1)
+        {
+          printf("Hit ");
+        }
+        else if (H != 1)
+        {
+          printf("Miss ");
+        }
+        if (E == 1)
+        {
+          printf("Eviction ");
+        }
+        printf( "\n" );
+      }
+      empty = -1;
+      H = 0;
+      E = 0;
+
+  }
+  fclose(pFile); // close file when done
+
+  printSummary(hit_count, miss_count, eviction_count);
   return 0;
 }
