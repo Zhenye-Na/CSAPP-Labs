@@ -3,7 +3,7 @@
 
 # C
 # Prerequisites
-*.d
+# *.d
 
 # Object files
 *.o
@@ -59,7 +59,7 @@ dkms.conf
 
 # C++
 # Prerequisites
-*.d
+# *.d
 
 # Compiled Object files
 *.slo
