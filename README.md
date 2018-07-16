@@ -8,9 +8,6 @@ The ICS course provides a programmer's view of how computer systems execute prog
 
 ## Lab Assignments
 
-The labs all share some common features. Each lab is distributed in a self-contained tar file. You will need a CS:APP account to download the code. To untar foo.tar, type "`tar xvf foo.tar`" to the Unix shell. This will create a directory called "`foo`" that contains all of the material for the lab.
-
-Handout directories for each lab (without solutions) are available to students who are using the book for self-study and who want to work on the labs. Solutions are provided only to instructors.
 
 - [x] [Data Lab](https://github.com/Zhenye-Na/CSAPP-Labs/tree/master/labs/Lab1-Data%20Lab)
 - [x] [Bomb Lab](https://github.com/Zhenye-Na/CSAPP-Labs/tree/master/labs/Lab2-Bomb%20Lab)
@@ -22,3 +19,17 @@ Handout directories for each lab (without solutions) are available to students w
 - [ ] [Shell Lab](https://github.com/Zhenye-Na/CSAPP-Labs/tree/master/labs/Lab8-Shell%20Lab)
 - [ ] [Malloc Lab](https://github.com/Zhenye-Na/CSAPP-Labs/tree/master/labs/Lab9-Malloc%20Lab)
 - [ ] [Proxy Lab](https://github.com/Zhenye-Na/CSAPP-Labs/tree/master/labs/Lab10-Proxy%20Lab)
+
+
+
+## Lecture Notes
+
+My own lecture notes of CS 15-213
+
+
+- [Representing and Manipulating Information]()
+- [Exceptional Control Flow in Computer Systems, Part 1]()
+- [Introduction to Memory Hierarchy, Part 1]()
+- [Introduction to Memory Hierarchy, Part 2]()
+- [Introduction to Linking]()
+- [Introduction to Virtual Memory]()
